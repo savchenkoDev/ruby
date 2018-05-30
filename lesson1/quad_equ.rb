@@ -1,19 +1,20 @@
 print "Введите коэффициент A: "
-a= gets.chomp.to_f
+a = gets.to_f
 print "Введите коэффициент B: "
-b= gets.chomp.to_f
+b = gets.to_f
 print "Введите коэффициент C: "
-c= gets.chomp.to_f
+c = gets.to_f
 
-d = b**2-4*a*c
-puts "Дискриминант: #{d}"
-if d<0
+discr = b**2 - 4 * a * c
+puts "Дискриминант: #{discr}"
+if discr < 0
   puts "Корней нет."
-elsif d==0
-#  x1=(-b+Math.sqrt(d))/2*a}
-  puts "Корень уравнения: #{(-b+Math.sqrt(d))/2*a}" # #{x1}"
-else d>0
-#  x1=(-b+Math.sqrt(d))/2*a
-#  x2=(-b-Math.sqrt(d))/2*a
-  puts "Корни уравнения: #{(-b+Math.sqrt(d))/2*a}, #{(-b-Math.sqrt(d))/2*a}" # #{x1}, #{x2}"
+elsif discr == 0
+  x1 = -b / 2 * a
+  puts "Корень уравнения: #{x1}"
+else discr > 0
+  sqrt = Math.sqrt(discr)
+  x1 = (-b + sqrt) / (2 * a)
+  x2 = (-b - sqrt) / (2 * a)
+  puts "Корни уравнения: #{x1}, #{x2}"
 end
