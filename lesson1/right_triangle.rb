@@ -23,10 +23,10 @@ end
 piph = sides[2]**2 == sides[1]**2 + sides[0]**2
 
 if piph && sides[1] == sides[0]
-  answer+="прямоугольный, равнобедренный"
+  answer += "прямоугольный, равнобедренный"
 elsif piph
-  answer+="прямоугольный"
+  answer += "прямоугольный"
 else
-  answer+="не прямоугольный"
+  answer += "не прямоугольный"
 end
 puts "Этот треугольник #{answer}."

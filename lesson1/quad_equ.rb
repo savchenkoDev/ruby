@@ -10,9 +10,9 @@ puts "Дискриминант: #{discr}"
 if discr < 0
   puts "Корней нет."
 elsif discr == 0
-  x1 = -b / 2 * a
+  x1 = -b / (2 * a)
   puts "Корень уравнения: #{x1}"
-else discr > 0
+else
   sqrt = Math.sqrt(discr)
   x1 = (-b + sqrt) / (2 * a)
   x2 = (-b - sqrt) / (2 * a)
