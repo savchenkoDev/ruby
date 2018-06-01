@@ -1,10 +1,10 @@
-answer  = {}
+answer = {}
 total = 0
 loop do
   print "Введите название товара > "
   product = gets.chomp
-  break if (product == "stop" || product == "" )
-  answer.store( product, {} )
+  break if product == "stop" || product == ""
+  answer[product] = {}
   print "Введите цену товара > "
   answer[product][:price] = gets.to_f
   print "Введите количество товара > "

@@ -13,4 +13,4 @@ month = {
   december: 31
 }
 
-month.each_key { |key| puts key if month[key] == 30 }
+month.each_key { |key| print "#{key}, " if month[key] == 30 }

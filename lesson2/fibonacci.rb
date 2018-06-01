@@ -1,6 +1,6 @@
-array = [0,1]
+array = [0, 1]
 new_elem = 1
-while new_elem <= 100 do
+while new_elem <= 100 
   array.push(new_elem)
   new_elem = array[-1] + array[-2]
 end
