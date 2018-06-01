@@ -5,7 +5,7 @@ print "Введите месяц > "
 month = gets.to_i
 print "Введите год > "
 year = gets.to_i
-print "leap" if ( year % 4 == 0 && year % 100 != 0 || year % 400 == 0 )
+day_in_month[1] += 1 if ( year % 4 == 0 && year % 100 != 0 || year % 400 == 0 )
 for i in (1..month - 1) do
   day += day_in_month[i - 1]
 end
