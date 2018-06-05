@@ -12,7 +12,7 @@ class Station
     if @trains.include?(train)
       puts 'Этот поезд уже числится на станции'
     else
-        @trains << train
+      @trains << train
     end
   end
 

@@ -5,12 +5,12 @@ class Route
     @stations = [start_station, finish_station]
   end
 
-  def add_station(station, position)
-    if @stations.include?(station)
+  def add_station(station, position = -2)
+    if @stations.include?(station) # Эту проверку нельзя убирать, иначе ниодну станцию не добавить
       puts "Станция уже есть в маршруте"
-    elsif stations.size == 2
+    elsif stations.size == 2 #
       @stations.insert(1, station)
-    elsif position != 0 && position != stations.size - 1
+    elsif ![-stations.size, -1, 0, stations.size - 1].include?(position)
       @stations.insert(position, station)
     else
       puts "Нельзя изменить начальную/конечную станцию"
