@@ -1,63 +1,66 @@
 class Train
-	attr_accessor :current_speed, :current_station, :detail, :number, :route
-	# attr_reader
+  attr_reader :current_speed, :number, :route, :type, :wagon_count
 
-	def initialize (number, type, wagon_count)
-		@detail = [number, type, wagon_count]
+  def initialize(number, type, wagon_count)
+    @number = number
+    @type = type
+    @wagon_count = wagon_count
+    @current_speed = 0
+  end
 
-		@number = number
-		@current_station = nil
-		@route = nil
-	end
-#  Метод набора скорости
-	def up_speed (speed)
-		self.current_speed = speed
-	end
+	def speed_ud(speed)
+    @current_speed += speed
+  end
 
-	def stop
-		self.current_speed = 0
-	end
+  def speed_down(speed)
+    new_speed = @current_speed - speed
+    @current_speed = new_speed if new_speed >= 0
+  end
 
-# Сначала думал передавать количество выгонов, но
-# т.к. метод может добавлять или убирать только по одному вагону, то принимать будет команду
-# и на основании ее производить действие
-	def update_wagon (action)
-		if current_speed != 0
-			return puts "Прицепить/отцепить вагон можно только когда поезд стоит"
-		end
-		case action
-		when 'add' then  return self.detail[2] +=1
-		when 'clean' then  return self.detail[2] -=1
-		end
-		puts "ERROR: нет такой команды."
-	end
+  def add_wagon
+    @wagon_count += 1
+  end
 
-	def get_route(route)
-		self.route = route.list
-		self.current_station = self.route[0]
-		@current_index = 0
-	end
+  def detach_wagon
+    @wagon_count -= 1 if @wagon_count > 0
+  end
 
-	def move (direction)
-		case direction
-			when "front"
-					@current_index += 1
-					self.current_station = self.route[@current_index]
+  def accept_route(route)
+    @route = route.stations
+    start_station = @route[0]
+    start_station.take_train(self)
+    @current_index = 0
+  end
 
-			when "back"
-					@current_index -= 1
-					self.current_station = self.route[@current_index]
-			else
-			self.route = nil if self. current_station = self.route.last # Когда доехали до конца маршрута обнуляем маршрут
-	end
-end
+  def forward
+    if @current_index == @route.size-1
+      puts "Поезд достиг конца маршрута."
+    else
+      current_station = @route[@current_index]
+      current_station.send_train(self)
+      @current_index += 1
+      current_station = @route[@current_index]
+      current_station.take_train(self)
+    end
+  end
 
-	def route_info (action)
-		case action
-			when "next" then return self.route[@current_index + 1]
-			when "prev" then return self.route[@current_index - 1]
-			when "current" then return self.current_station
-		end
-		puts "Нет такой команды"
-	end
+  def backward
+    if @current_index == 0
+      puts "Поезд достиг начала маршрута."
+    else
+      current_station = @route[@current_index]
+      current_station.send_train(self)
+      @current_index -= 1
+      current_station = @route[@current_index]
+      current_station.take_train(self)
+    end
+  end
+
+  def next_station
+    @route[@current_index+1]
+  end
+
+  def prev_station
+    @route[@current_index-1]
+  end
 end

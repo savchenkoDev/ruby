@@ -1,23 +1,33 @@
 class Route
-	attr_reader :list
-	def initialize(start_station, finish_station)
-		@list = [start_station.name, finish_station.name]
-	end
+  attr_reader :stations
 
-	def add_inter_station (station, position =1)
-		if self.list.include?(station.name)
-			puts "Эта станция уже есть в маршруте."
-		else
-			self.list.insert(position, station.name)
-		end
-	end
+  def initialize(start_station, finish_station)
+    @stations = [start_station, finish_station]
+  end
 
-	def delete_inter_station (station)
-		self.list.delete(station) { puts "Такой станции нет в маршруте." }
-	end
+  def add_station(station, position)
+    if @stations.include?(station)
+      puts "Станция уже есть в маршруте"
+    elsif stations.size == 2
+      @stations.insert(1, station)
+    elsif position != 0 && position != stations.size - 1
+      @stations.insert(position, station)
+    else
+      puts "Нельзя изменить начальную/конечную станцию"
+    end
+  end
 
-	def show
-		self.list.each { |elem| print "#{elem} -> "}
-	end
+  def delete_station(station)
+    if !@stations.include?(station)
+      puts "Такой станции нет в маршруте"
+    elsif station != @stations.last && station != @stations.first
+      self.stations.delete(station)
+    else
+      puts "Нельзя удалить начальную/конечную станцию"
+    end
+  end
 
+  def show
+    @stations.each { |station| puts station.name }
+  end
 end
