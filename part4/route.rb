@@ -5,26 +5,26 @@ class Route
     @stations = [start_station, finish_station]
   end
 
+  def extreme_position?(position)
+    [0, stations.size - 1, -1, -stations.size].include?(position)
+  end
+
+# Ранний возврат, если станция уже есть в маршруте,
+# или если пытаются изменить начальную/конечную
+# если добавляем в первый раз, то пишет на первую позицию
   def add_station(station, position = -2)
-    if @stations.include?(station) # Эту проверку нельзя убирать, иначе ниодну станцию не добавить
-      puts "Станция уже есть в маршруте"
-    elsif stations.size == 2 #
-      @stations.insert(1, station)
-    elsif ![-stations.size, -1, 0, stations.size - 1].include?(position)
-      @stations.insert(position, station)
-    else
-      puts "Нельзя изменить начальную/конечную станцию"
-    end
+    return false if @stations.include?(station) || extreme_position?(position)
+
+    position = 1 if stations.size == 2
+    @stations.insert(position, station)
+
   end
 
   def delete_station(station)
-    if !@stations.include?(station)
-      puts "Такой станции нет в маршруте"
-    elsif station != @stations.last && station != @stations.first
-      self.stations.delete(station)
-    else
-      puts "Нельзя удалить начальную/конечную станцию"
-    end
+    return false if !@stations.include?(station)
+    return false if station = @stations.last && station = @stations.first
+
+    @stations.delete(station)
   end
 
   def show

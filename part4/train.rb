@@ -8,58 +8,59 @@ class Train
     @current_speed = 0
   end
 
-	def speed_ud(speed)
+  def speed_ud(speed)
     @current_speed += speed
   end
 
   def speed_down(speed)
-    new_speed = @current_speed - speed
-    @current_speed = new_speed >= 0 ? new_speed : 0
+    @current_speed -= speed
+    @current_speed = 0 if @current_speed.negative?
   end
 
-  def stop?
-    @current_speed == 0 if @current_speed == 0
+  def add_wagon
+    @wagon_count += 1 if @current_speed == 0
   end
 
   def detach_wagon
-
     @wagon_count -= 1 if @wagon_count > 0 && @current_speed == 0
   end
 
   def accept_route(route)
-    @route = route#.stations
+    @route = route
     start_station = @route.stations.first
     start_station.take_train(self)
     @current_index = 0
   end
 
   def forward
-    if @current_index == @route.stations.size - 1
+    if !next_station
       puts "Поезд достиг конца маршрута."
     else
+      current_station.send_train(self)
+      next_station.take_train(self)
       @current_index += 1
-      current_station = @route.stations[@current_index]
-      prev_station.send_train(self)
-      current_station.take_train(self)
     end
   end
 
   def backward
-    if @current_index == 0
+    if !prev_station
       puts "Поезд достиг начала маршрута."
     else
+      current_station.send_train(self)
+      prev_station.take_train(self)
       @current_index -= 1
-      current_station = @route.stations[@current_index]
-      next_station.send_train(self)
-      current_station.take_train(self)
     end
   end
 
   def next_station
-    @route.stations[@current_index+1]
+    @route.stations[@current_index + 1]
+  end
+
+  def current_station
+    @route.stations[@current_index]
   end
 
   def prev_station
-    @route.stations[@current_index-1]
+    @route.stations[@current_index - 1]
   end
 end
