@@ -7,22 +7,15 @@ class Station
   end
 
   def take_train(train)
-    if @trains.include?(train)
-      puts 'Этот поезд уже числится на станции'
-    else
-      @trains << train
-    end
+    return if @trains.include?(train)
+    @trains << train
   end
 
   def send_train(train)
-    if @trains.include?(train)
-      @trains.delete(train)
-    else
-      puts "Такого поезда нет на станции."
-    end
+    @trains.delete(train) if @trains.include?(train)
   end
 
   def trains_by_type(type)
-    @trains.select { |train| train.type == type }
+    @trains.select { |train| train.type == type}
   end
 end

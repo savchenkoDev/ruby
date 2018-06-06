@@ -6,7 +6,7 @@ class Route
   end
 
   def extreme_position?(position)
-    [0, @stations.size - 1, -1, -@stations.size].include?(position)
+    @stations[position] == @stations[0] || @stations[position] == @stations[-1]
   end
 
   def add_station(station, position = -2)
