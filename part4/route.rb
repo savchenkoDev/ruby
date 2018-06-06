@@ -5,25 +5,17 @@ class Route
     @stations = [start_station, finish_station]
   end
 
-  def extreme_position?(position)
-    [0, stations.size - 1, -1, -stations.size].include?(position)
+  def extreme_position?(station)
+    station == stations[0] || station == stations[-1]
   end
 
-# Ранний возврат, если станция уже есть в маршруте,
-# или если пытаются изменить начальную/конечную
-# если добавляем в первый раз, то пишет на первую позицию
   def add_station(station, position = -2)
-    return false if @stations.include?(station) || extreme_position?(position)
-
-    position = 1 if stations.size == 2
+    return if @stations.include?(station) || extreme_position?(station)
     @stations.insert(position, station)
-
   end
 
   def delete_station(station)
-    return false if !@stations.include?(station)
-    return false if station = @stations.last && station = @stations.first
-
+    return if extreme_position?(station) || !@stations.include?(station)
     @stations.delete(station)
   end
 

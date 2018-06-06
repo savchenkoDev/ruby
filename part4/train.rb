@@ -33,23 +33,17 @@ class Train
   end
 
   def forward
-    if !next_station
-      puts "Поезд достиг конца маршрута."
-    else
-      current_station.send_train(self)
-      next_station.take_train(self)
-      @current_index += 1
-    end
+    return if !next_station
+    current_station.send_train(self)
+    next_station.take_train(self)
+    @current_index += 1
   end
 
   def backward
-    if !prev_station
-      puts "Поезд достиг начала маршрута."
-    else
-      current_station.send_train(self)
-      prev_station.take_train(self)
-      @current_index -= 1
-    end
+    return if !prev_station
+    current_station.send_train(self)
+    prev_station.take_train(self)
+    @current_index -= 1
   end
 
   def next_station
