@@ -10,3 +10,4 @@ require_relative "railway.rb"
 
 rw = Railway.new
 rw.seed
+rw.menu
