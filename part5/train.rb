@@ -1,6 +1,6 @@
 class Train
   attr_reader :current_speed, :number, :route, :type
-  attr_accessor :wagons
+  attr_accessor :wagons # если убрать, то к классе Railway, не видно свойство wagons
 
   def initialize(number, type)
     @number = number
@@ -31,8 +31,10 @@ class Train
 
   def add_wagon(wagon)
     return unless @type == wagon.type
-    @wagons << wagon if @current_speed == 0
-    wagon.add_to_train(self)
+    if @current_speed == 0
+      @wagons << wagon
+      wagon.add_to_train(self)
+    end
   end
 
   def unhook_wagon(wagon)
@@ -40,14 +42,14 @@ class Train
     wagon.train = nil
   end
 
-  def forward
+  def move_forward
     return unless next_station
     current_station.send_train(self)
     next_station.take_train(self)
     @current_index += 1
   end
 
-  def backward
+  def move_backward
     return unless prev_station
     current_station.send_train(self)
     prev_station.take_train(self)

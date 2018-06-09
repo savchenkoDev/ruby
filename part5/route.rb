@@ -21,9 +21,8 @@ class Route
     @stations.each { |station| puts station.name }
   end
 
-  protected
-# extreme_position в protected, т.к. это внутренний метод для нахождения
-# крайних элементов массива в интерфейсе он не нужен
+  private
+
   def extreme_position?(position)
     @stations[position] == @stations[0] || @stations[position] == @stations[-1]
   end

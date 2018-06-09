@@ -18,6 +18,4 @@ class Station
   def send_train(train)
     @trains.delete(train) if @trains.include?(train)
   end
-
-
 end
