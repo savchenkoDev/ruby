@@ -1,10 +1,11 @@
 require_relative 'interface.rb'
+require_relative 'const.rb'
 
 class Railway
   attr_reader :trains, :stations, :wagons, :routes
 
-  SELECT = 'select'
-  CREATE = 'create'
+
+
 
   def initialize
     @stations = []
@@ -26,7 +27,7 @@ class Railway
   end
 
   def menu
-    item = get_user_answer(Interface::MAIN_MENU)
+    item = select_list_item(MAIN_MENU)
     case item
       when 1 then create_station
       when 2 then create_train
@@ -37,51 +38,39 @@ class Railway
       when 7 then detach_wagon_from_train
       when 8 then move_train
       when 9 then show_stations_and_trains_list
-      when Interface::RETURN_COMAND then return
-      else @interface.error("Такой команды нет.")
+      when 0 then return
+      else @interface.error_message(WRONG_ATTR)
     end
   end
 
   private
 
   def create_station
-    @interface.render(CREATE, :station)
-    name = gets.chomp
+    name = get_name(@stations)
     stations << Station.new(name)
   end
 
   def create_train
-    @interface.render(CREATE, :train)
-    while true
-      number = gets.to_i
-      if @trains.map(&:number).include?(number)
-        @interface.error_message("Такой поезд уже есть.")
-      else
-        break
-      end
-    end
-    type = get_user_answer(Interface::TYPE)
+    number = get_number(@trains)
+    type = get_type()
     case type
-      when 1 then @trains << PassengerTrain.new(number)
-      when 2 then @trains << CargoTrain.new(number)
-      else return
+      when :pass then @trains << PassengerTrain.new(number)
+      when :cargo then @trains << CargoTrain.new(number)
     end
   end
 
   def create_wagon
-    @interface.render(CREATE, :wagon)
-    number = gets.to_i
-    type = get_user_answer(Interface::TYPE)
+    number = get_number(@wagons)
+    type = get_type()
     case type
-      when 1 then @wagons << PassengerWagon.new(number)
-      when 2 then @wagons << CargoWagon.new(number)
-      else return
+      when :pass then @trains << PassengerWagon.new(number)
+      when :cargo then @trains << CargoWagon.new(number)
     end
   end
 
   def manage_route
-    action = get_user_answer(Interface::ACTION, 'cu')
-    case action
+    item = select_list_item(ROUTE_CRUD)
+    case item
       when 1 then create_route
       when 2 then update_route
       else return
@@ -97,7 +86,7 @@ class Railway
 
   def update_route
     route = get_route(@routes)
-    action = get_user_answer(@stations, 'cd')
+    item = item = select_list_item(STATION_CRUD)
     case action
       when 1
         avail_stat = @stations.reject { |station| route.stations.include?(station) }
@@ -133,7 +122,7 @@ class Railway
 
   def move_train
     train = get_train(@trains)
-    action = get_user_answer(Interface::DIRECTION)
+    item = select_list_item(DIRECTION)
     case action
     when 1 then train.move_forward
     when 2 then train.move_backward
@@ -142,7 +131,7 @@ class Railway
   end
 
   def show_stations_and_trains_list
-    action = get_user_answer(Interface::LIST)
+    item = select_list_item(LIST)
     case action
       when 1 then stations_list
       when 2 then trains_on_station
@@ -151,14 +140,54 @@ class Railway
   end
 
   def stations_list
-    @interface.render_list(@stations)
+    $interface.show_list(@stations)
   end
 
   def trains_on_station
     station = get_object_by_index(@stations)
-    @interface.render_list(station.trains)
+    @interface.show_list(station.trains)
   end
 # ХЭЛПЕРЫ
+  def get_number(data)
+    @interface.show_message(ASK_NUMBER)
+    number = gets.to_i
+    if data.map(&:number).include?(number)
+      @interface.error_message(WRONG_ATTR)
+      return get_number(data)
+    end
+  end
+
+  def get_name(data)
+    @interface.show_message(ASK_NAME)
+    name = gets.chomp
+    if data.map(&:name).include?(name)
+      @interface.error_message(WRONG_ATTR)
+      return get_number(data)
+    end
+  end
+
+  def get_type
+    @interface.show_message(ASK_TYPE)
+    input = gets.to_i
+    type = case input
+      when 1 then :pass
+      when 2 then :cargo
+      else get_type
+    end
+  end
+
+  def select_list_item(items)
+    @interface.show_message(ASK_LIST_ITEM)
+    @interface.show_list(items)
+    item = gets.to_i
+    return if item == RETURN
+    if !items[item - 1].nil?
+      return item
+    else
+      select_list_item(items)
+    end
+  end
+
   def get_station(data_array)
     get_object_by_index(data_array)
   end
@@ -175,41 +204,8 @@ class Railway
     get_object_by_index(data_array)
   end
 
-  def get_user_answer(data_array, crud = '')
-    object = convert_data(data_array)
-    data_array = @interface.get_crud_array(crud) if crud.size > 0
-    @interface.render(SELECT, object, data_array, crud)
-    while true
-      index = gets.to_i
-      exit if index == Interface::RETURN_COMAND
-      if !data_array[index - 1].nil?
-        return index
-      else
-        puts "Такой команды нет."
-      end
-    end
-  end
-
   def get_object_by_index(data_array)
-    index = get_user_answer(data_array)
+    index = select_list_item(data_array)
     return data_array[index - 1]
   end
-
-  def convert_data(data)
-    case data
-    when @stations then object =  :station
-    when @trains then object =  :train
-    when @routes then object =  :route
-    when @wagons then object =  :wagon
-    when Interface::DIRECTION then object =  :direction
-    when Interface::TYPE then object =  :type
-    when Interface::ACTION then object =  :action
-    end
-    return object
-  end
-
-
-
-
-
 end
