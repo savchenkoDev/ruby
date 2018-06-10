@@ -1,7 +1,6 @@
 class Train
-  attr_reader :current_speed, :number, :route, :type
-  attr_accessor :wagons # если убрать, то к классе Railway, не видно свойство wagons
-
+  attr_reader :current_speed, :number, :route, :type, :wagons
+  
   def initialize(number, type)
     @number = number
     @type = type

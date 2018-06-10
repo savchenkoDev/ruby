@@ -1,5 +1,5 @@
 class Wagon
-  attr_reader :type
+  attr_reader :type, :number
   attr_accessor :train
 
   def initialize(number,type)

@@ -9,7 +9,7 @@ class Interface
 
   def show_list(list_data)
     list_data.each_with_index { |item, index| puts "#{index + 1}. #{item}"  }
-    puts "#{RETURN}. - Выход"
+    puts "#{RETURN}. ВЫХОД"
     print "> "
   end
 end
