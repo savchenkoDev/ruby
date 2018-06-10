@@ -4,9 +4,6 @@ require_relative 'const.rb'
 class Railway
   attr_reader :trains, :stations, :wagons, :routes
 
-
-
-
   def initialize
     @stations = []
     @trains = []
@@ -54,8 +51,8 @@ class Railway
     number = get_number(@trains)
     type = get_type()
     case type
-      when :pass then @trains << PassengerTrain.new(number)
-      when :cargo then @trains << CargoTrain.new(number)
+    when :pass then @trains << PassengerTrain.new(number)
+    when :cargo then @trains << CargoTrain.new(number)
     end
   end
 
@@ -63,84 +60,80 @@ class Railway
     number = get_number(@wagons)
     type = get_type()
     case type
-      when :pass then @trains << PassengerWagon.new(number)
-      when :cargo then @trains << CargoWagon.new(number)
+    when :pass then @trains << PassengerWagon.new(number)
+    when :cargo then @trains << CargoWagon.new(number)
     end
   end
 
   def manage_route
     item = select_list_item(ROUTE_CRUD)
     case item
-      when 1 then create_route
-      when 2 then update_route
-      else return
+    when 1 then create_route
+    when 2 then update_route
     end
   end
 
   def create_route
-    station1 = get_station(@stations)
+    station1 = get_from(@stations)
     available_stations = @stations.reject { |station| station == station1 }
-    station2 = get_station(available_stations)
+    station2 = get_from(available_stations)
     @routes << Route.new(station1, station2)
   end
 
   def update_route
-    route = get_route(@routes)
-    item = item = select_list_item(STATION_CRUD)
+    route = get_from(@routes)
+    item = select_list_item(STATION_CRUD)
     case action
-      when 1
-        avail_stat = @stations.reject { |station| route.stations.include?(station) }
-        station = get_station(avail_stat)
-        route.add_station(station)
-      when 2
-        stations = route.stations
-        avail_stat = stations.reject { |station| station == stations[0] || station == stations[-1] }
-        station = get_station(avail_stat)
-        route.delete_station(station)
-      else return
+    when 1
+      avail_stat = @stations[.reject { |station| route.stations.include?(station) }]
+      station = get_from(avail_stat)
+      route.add_station(station)
+    when 2
+      stations = route.stations
+      avail_stat = stations[1...-2]
+      station = get_station(avail_stat)
+      route.delete_station(station)
     end
   end
 
   def accept_route_to_train
-    train = get_train(@trains)
+    train = get_from(@trains)
     route = get_route(@routes)
     train.accept_route(route)
   end
 
   def add_wagon_to_train
-    train = get_train(@trains)
-    avail_wagons = @wagons.reject { |wagon| wagon.type != train.type }
-    wagon = get_wagon(avail_wagons)
+    train = get_from(@trains)
+    avail_wagons = @wagons.select { |wagon| wagon.type == train.type }
+    wagon = get_from(avail_wagons)
     train.add_wagon(wagon)
   end
 
   def detach_wagon_from_train
-    train = get_train(@trains)
-    wagon = get_wagon(train.wagons)
+    train = get_from(@trains)
+    wagon = get_from(train.wagons)
     train.unhook_wagon(wagon)
   end
 
   def move_train
-    train = get_train(@trains)
+    train = get_from(@trains)
     item = select_list_item(DIRECTION)
-    case action
+    case item
     when 1 then train.move_forward
     when 2 then train.move_backward
-      else return
     end
   end
 
   def show_stations_and_trains_list
     item = select_list_item(LIST)
-    case action
-      when 1 then stations_list
-      when 2 then trains_on_station
-      else return
+    case item
+    when 1 then stations_list
+    when 2 then trains_on_station
     end
   end
 
   def stations_list
-    $interface.show_list(@stations)
+    @interface.show_list(@stations)
   end
 
   def trains_on_station
@@ -151,28 +144,28 @@ class Railway
   def get_number(data)
     @interface.show_message(ASK_NUMBER)
     number = gets.to_i
-    if data.map(&:number).include?(number)
-      @interface.error_message(WRONG_ATTR)
-      return get_number(data)
-    end
+    return unless data.map(&:number).include?(number)
+    @interface.error_message(WRONG_ATTR)
+    get_number(data)
   end
 
   def get_name(data)
     @interface.show_message(ASK_NAME)
     name = gets.chomp
-    if data.map(&:name).include?(name)
-      @interface.error_message(WRONG_ATTR)
-      return get_number(data)
-    end
+    return unless data.map(&:name).include?(number)
+    @interface.error_message(WRONG_ATTR)
+    get_name(data)
   end
 
   def get_type
     @interface.show_message(ASK_TYPE)
     input = gets.to_i
-    type = case input
-      when 1 then :pass
-      when 2 then :cargo
-      else get_type
+    case input
+    when 1 then return :pass
+    when 2 then return :cargo
+    else
+      @interface.error_message(WRONG_ATTR)
+      get_type
     end
   end
 
@@ -181,30 +174,11 @@ class Railway
     @interface.show_list(items)
     item = gets.to_i
     return if item == RETURN
-    if !items[item - 1].nil?
-      return item
-    else
-      select_list_item(items)
-    end
+    return item if (1..items.size).cover?(item)
+    select_list_item(items)
   end
 
-  def get_station(data_array)
-    get_object_by_index(data_array)
-  end
-
-  def get_route(data_array)
-    get_object_by_index(data_array)
-  end
-
-  def get_train(data_array)
-    get_object_by_index(data_array)
-  end
-
-  def get_wagon(data_array)
-    get_object_by_index(data_array)
-  end
-
-  def get_object_by_index(data_array)
+  def get_from(data_array)
     index = select_list_item(data_array)
     return data_array[index - 1]
   end
