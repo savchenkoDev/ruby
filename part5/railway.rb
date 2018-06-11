@@ -24,7 +24,7 @@ class Railway
   end
 
   def menu
-    while true
+    loop do
       item = select_list_item(MAIN_MENU)
       case item
         when 1 then create_station
@@ -77,48 +77,48 @@ class Railway
   end
 
   def create_route
-    station1 = get_station_from_user(@stations)
+    station1 = user_choice(@stations, :name)
     avail_stat = @stations.reject { |station| station == station1 }
-    station2 = get_station_from_user(avail_stat)
+    station2 = user_choice(avail_stat, :name)
     @routes << Route.new(station1, station2)
   end
 
   def update_route
-    route = get_route_from_user(@routes)
+    route = user_choice(@routes, :title)
     item = select_list_item(STATION_CRUD)
     case item
     when 1
-      avail_stat = @stations.reject { |station| route.stations.include?(station) }
-      station = get_station_from_user(avail_stat)
+      avail_stat = @stations - route.stations
+      station = user_choice(avail_stat, :name)
       route.add_station(station)
     when 2
       avail_stat = route.stations[1..-2]
-      station = get_station_from_user(avail_stat)
+      station = user_choice(avail_stat, :name)
       route.delete_station(station)
     end
   end
 
   def accept_route_to_train
-    train = get_train_from_user(@trains)
-    route = get_route_from_user(@routes)
+    train = user_choice(@trains, :number)
+    route = user_choice(@routes, :title)
     train.accept_route(route)
   end
 
   def add_wagon_to_train
-    train = get_train_from_user(@trains)
+    train = user_choice(@trains, :number)
     avail_wagons = @wagons.select { |wagon| wagon.type == train.type }
-    wagon = get_wagon_from_user(avail_wagons)
+    wagon = user_choice(avail_wagons, :number)
     train.add_wagon(wagon)
   end
 
   def detach_wagon_from_train
-    train = get_train_from_user(@trains)
-    wagon = get_wagon_from_user(train.wagons)
+    train = user_choice(@trains, :number)
+    wagon = user_choice(train.wagons, :number)
     train.unhook_wagon(wagon)
   end
 
   def move_train
-    train = get_train_from_user(@trains)
+    train = user_choice(@trains, :number)
     item = select_list_item(DIRECTION)
     case item
     when 1 then train.move_forward
@@ -139,7 +139,7 @@ class Railway
   end
 
   def trains_on_station
-    station = get_station_from_user(@stations)
+    station = user_choice(@stations, :name)
     trains = station.trains.map(&:number)
     @interface.show_list(trains)
   end
@@ -183,26 +183,8 @@ class Railway
     select_list_item(items)
   end
 
-  def get_route_from_user(data_source)
-    item = select_list_item(data_source.map(&:title))
-    menu if item == RETURN
-    data_source[item - 1]
-  end
-
-  def get_train_from_user(data_source)
-    item = select_list_item(data_source.map(&:number))
-    menu if item == RETURN
-    data_source[item - 1]
-  end
-
-  def get_wagon_from_user(data_source)
-    item = select_list_item(data_source.map(&:number))
-    menu if item == RETURN
-    data_source[item - 1]
-  end
-
-  def get_station_from_user(data_source)
-    item = select_list_item(data_source.map(&:name))
+  def user_choice(data_source, attribute)
+    item = select_list_item(data_source.map(&attribute))
     menu if item == RETURN
     data_source[item - 1]
   end
