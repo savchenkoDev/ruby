@@ -5,10 +5,6 @@ module InstanceCounter
   end
 
   module ClassMethods
-    def initialize
-      @instances = 0
-    end
-
     def instances
       @instances ||= 0
     end

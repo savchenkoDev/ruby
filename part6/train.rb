@@ -7,7 +7,6 @@ class Train
   attr_reader :current_speed, :number, :route, :type, :wagons
   @@trains = {}
   class <<self
-    attr_reader :trains
     def find(number)
       @@trains[number]
     end
@@ -70,8 +69,6 @@ class Train
   end
 
   protected
-# Методы скорости в protected, потому что станция и маршрут не должны управлять
-# скоростью или вагонами. Значит делать их публичными неправильно
 
   def speed_ud(speed)
     @current_speed += speed
