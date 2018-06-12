@@ -31,16 +31,11 @@ class Route
     @stations.each { |station| puts station.name }
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   private
 
   def validate!
     raise "Начальная и конечная станция не могут совпадать" if @stations[0] == @stations[-1]
+    raise "Неизвестный тип аргумента" if @stations[0].class != Station || @stations[-1].class != Station
   end
 
   def extreme_position?(position)

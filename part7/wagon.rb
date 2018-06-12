@@ -20,18 +20,11 @@ class Wagon
     @train = train
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   protected
 
   def validate!
     raise "Номер не может быть пустым" if number.nil?
     raise "Неправильный формат номера" if number !~ NUMBER_FORMAT
     raise "Такой вагон уже добавлен" if @@wagons.key?(number)
-    true
   end
 end

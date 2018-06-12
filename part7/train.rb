@@ -72,19 +72,12 @@ class Train
     @current_index -= 1
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   protected
 
   def validate!
     raise "Номер не может быть пустым" if number.nil?
     raise "Неправильный формат номера" if number !~ NUMBER_FORMAT
-    raise "Неизвестный тип поезда" if type != :pass && type != :cargo
-    true
+    raise "Неизвестный тип поезда" unless %i[cargo pass].include?(type)
   end
 
   def speed_ud(speed)

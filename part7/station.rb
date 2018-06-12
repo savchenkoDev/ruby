@@ -35,18 +35,11 @@ class Station
     @trains.delete(train) if @trains.include?(train)
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   private
 
   def validate!
     raise "Имя не может быть пустым" if name.nil?
     raise "Имя не может состоять меньше чем из 3 символов" if name.length < 3
     raise "Такая станция уже добавлена" if @@stations.map(&:name).include?(name)
-    true
   end
 end
