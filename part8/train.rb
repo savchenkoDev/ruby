@@ -25,8 +25,8 @@ class Train
     register_instance
   end
 
-  def wagons_list(&block)
-    @wagons.each { |wagon| block.call(wagon)}
+  def each_wagon(&block)
+    @wagons.each { |wagon| yield(wagon)}
   end
 
   def next_station

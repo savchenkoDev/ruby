@@ -22,8 +22,8 @@ class Station
     register_instance
   end
 
-  def trains_list(&block)
-    @trains.each { |train| block.call(train)}
+  def each_train(&block)
+    @trains.each { |train| yield(train)}
   end
 
   def trains_by_type(type)

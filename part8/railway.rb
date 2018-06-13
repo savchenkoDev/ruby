@@ -149,7 +149,6 @@ class Railway
     begin
       @wagons << class_name.new(number, count)
     rescue Exception => e
-      # @interface.show_message("ОШИБКА: #{e.message}")
       create_wagon
     end
   end
@@ -213,14 +212,13 @@ class Railway
   def take_place
     wagon = user_choice(@wagons, :number)
     begin
-      case wagon.type
-      when :pass then wagon.take_place
-      when :cargo
-        volume = get_volume_from_user
-        wagon.take_volume(volume)
+      volume = get_volume_from_user if wagon.type == :cargo
+      if answer = wagon.take_position(volume)
+        @interface.show_message("Вы заняли #{answer} в вагоне. Ещё #{wagon.free_position} свободно.")
+        @interface.show_message("Вагон полон.") if wagon.free_position.zero?
       end
     rescue Exception => e
-      puts "Ошибка: #{e.message}"
+      @interface.show_message("Ошибка: #{e.message}")
       take_place
     end
 
