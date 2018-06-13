@@ -2,7 +2,7 @@ require_relative "manufacturer.rb"
 require_relative 'exception_handler.rb'
 
 class Wagon
-  attr_reader :type, :number, :taken_position
+  attr_reader :type, :number, :taken_position, :total_position
   attr_accessor :train, :manufacturer
   attr_reader
   include Manufacturer
@@ -22,18 +22,18 @@ class Wagon
     @train = train
   end
 
-  def take_position(amount = 1)
-    return if @taken_position == @total_position
-    case @type
-    when :pass
-      @taken_position += 1
-      message = "место"
-    when :cargo
-      volume = overload(amount)
-      @taken_position += volume
-      message = "объем (#{volume})"
-    end
-    return message
+  def take_position(amount)
+    volume = overload(amount)
+    @taken_position += volume
+  end
+
+  def free_position
+    @total_position - @taken_position
+  end
+
+  def overload(amount)
+    return 0 if amount < 0
+    @taken_position + amount > @total_position ? free_position : amount
   end
 
   protected

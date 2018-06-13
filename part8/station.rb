@@ -17,12 +17,11 @@ class Station
     @name = name
     @trains = []
     init_validate
-    puts "Добавлена станция: #{name}"
     @@stations << self
     register_instance
   end
 
-  def each_train(&block)
+  def each_train
     @trains.each { |train| yield(train)}
   end
 

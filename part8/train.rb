@@ -20,12 +20,11 @@ class Train
     @wagons = []
     @current_speed = 0
     init_validate
-    puts "Создан поезд: № #{number}, тип: #{type}"
     @@trains[number] = self
     register_instance
   end
 
-  def each_wagon(&block)
+  def each_wagon
     @wagons.each { |wagon| yield(wagon)}
   end
 

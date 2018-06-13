@@ -1,6 +1,10 @@
-class Interface
+module Interface
   def show_message(message)
     puts message
+  end
+
+  def show_line(message)
+    print message
   end
 
   def error_message(message)

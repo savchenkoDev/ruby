@@ -3,17 +3,15 @@ require_relative 'const.rb'
 
 class Railway
   attr_reader :trains, :stations, :wagons, :routes
-
+  include Interface
   def initialize
     @stations = []
     @trains = []
     @wagons = []
     @routes = []
-    @interface = Interface.new
   end
 
   def seed
-    @interface.delimiter
     station = Station.new("Сочи")
     @stations << station
     # @stations << Station.new("Сочи")
@@ -50,7 +48,7 @@ class Railway
       when 7 then show_stations_and_trains_list
       when RETURN then exit
       else
-        @interface.show_message("Неизвестная команда")
+        show_message("Неизвестная команда")
         menu
       end
     end
@@ -70,10 +68,12 @@ class Railway
   def create_station
     name = get_name_from_user(@stations)
     begin
-      stations << Station.new(name)
+      station = Station.new(name)
+      @stations << station
     rescue
       create_station
     end
+    show_message("Добавлена станция: #{station.name}")
   end
 
   def view_station
@@ -105,6 +105,8 @@ class Railway
     rescue
       create_train
     end
+    show_message "Создан поезд: № #{number}, тип: #{type}"
+
   end
 
   def view_train
@@ -112,9 +114,9 @@ class Railway
     train.wagons_list do |wagon|
       case wagon.type
       when :pass
-        puts "№ #{wagon.number}, тип: #{wagon.type}, количество мест(свободно/занято): #{wagon.free_places}/#{wagon.taken_places}"
+        show_message "№ #{wagon.number}, тип: #{wagon.type}, количество мест(свободно/занято): #{wagon.free_places}/#{wagon.taken_places}"
       when :cargo
-        puts "№ #{wagon.number}, тип: #{wagon.type}, объем вагона(свободно/занято): #{wagon.free_volume}/#{wagon.taken_volume}"
+        show_message "№ #{wagon.number}, тип: #{wagon.type}, объем вагона(свободно/занято): #{wagon.free_volume}/#{wagon.taken_volume}"
       end
     end
   end
@@ -147,10 +149,13 @@ class Railway
     end
     count = get_count_from_user(@wagons)
     begin
-      @wagons << class_name.new(number, count)
+      wagon = class_name.new(number, count)
+      @wagons << wagon
     rescue Exception => e
+      show_message "ОШИБКА: #{e.message}"
       create_wagon
     end
+    show_message "Создан вагон: № #{wagon.number}, тип: #{wagon.type}, объем: #{wagon.total_position}"
   end
 
   def add_wagon_to_train
@@ -182,10 +187,12 @@ class Railway
     avail_stat = @stations.reject { |station| station == station1 }
     station2 = user_choice(avail_stat, :name)
     begin
-      @routes << Route.new(station1, station2)
+      route = Route.new(station1, station2)
+      @routes << route
     rescue
       create_route
     end
+    show_message "Создан маршрут: #{route.title}"
   end
 
   def update_route
@@ -213,12 +220,13 @@ class Railway
     wagon = user_choice(@wagons, :number)
     begin
       volume = get_volume_from_user if wagon.type == :cargo
-      if answer = wagon.take_position(volume)
-        @interface.show_message("Вы заняли #{answer} в вагоне. Ещё #{wagon.free_position} свободно.")
-        @interface.show_message("Вагон полон.") if wagon.free_position.zero?
+      if wagon.take_position(volume)
+        delimiter
+        show_message "Вы заняли место в вагоне. Ещё #{wagon.free_position} свободно."
+        show_message "Вагон полон." if wagon.free_position.zero?
       end
     rescue Exception => e
-      @interface.show_message("Ошибка: #{e.message}")
+      show_message "Ошибка: #{e.message}"
       take_place
     end
 
@@ -233,43 +241,43 @@ class Railway
   end
 
   def stations_list
-    @interface.show_list(@stations.map(&:name))
+    show_list(@stations.map(&:name))
   end
 
   def trains_on_station
     station = user_choice(@stations, :name)
     trains = station.trains.map(&:number)
-    @interface.show_list(trains)
+    show_list(trains)
   end
 # ХЭЛПЕРЫ
   def get_number_from_user(data_source)
-    @interface.delimiter
-    @interface.show_message(ASK_NUMBER)
+    delimiter
+    show_line(ASK_NUMBER)
     number = gets.chomp
   end
 
   def get_count_from_user(data_source)
-    @interface.delimiter
-    @interface.show_message(ASK_COUNT)
+    delimiter
+    show_line(ASK_COUNT)
     number = gets.to_i
   end
 
   def get_volume_from_user
-    @interface.delimiter
-    @interface.show_message(ASK_VOLUME)
+    delimiter
+    show_line(ASK_VOLUME)
     volume = gets.to_i
   end
 
   def get_name_from_user(data_source)
-    @interface.delimiter
-    @interface.show_message(ASK_NAME)
+    delimiter
+    show_line(ASK_NAME)
     name = gets.chomp
   end
 
   def get_type_from_user
-    @interface.delimiter
-    @interface.show_message(ASK_TYPE)
-    @interface.show_list(TYPE)
+    delimiter
+    show_message(ASK_TYPE)
+    show_list(TYPE)
     input = gets.to_i
     case input
     when 0 then menu
@@ -279,13 +287,13 @@ class Railway
   end
 
   def select_list_item(items)
-    @interface.delimiter
-    @interface.show_message(ASK_LIST_ITEM)
-    @interface.show_list(items)
+    delimiter
+    show_message(ASK_LIST_ITEM)
+    show_list(items)
     item = gets.to_i
     return 0 if item == RETURN
     return item if (1..items.size).cover?(item)
-    @interface.error_message(UNKNOWN_COMAND)
+    error_message(UNKNOWN_COMAND)
     select_list_item(items)
   end
 

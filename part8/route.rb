@@ -11,7 +11,6 @@ class Route
     @stations = [start_station, finish_station]
     @title = "#{start_station.name} - #{finish_station.name}"
     init_validate
-    puts "Создан маршрут: #{title}"
     register_instance
   end
 
