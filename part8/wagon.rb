@@ -2,18 +2,18 @@ require_relative "manufacturer.rb"
 require_relative 'exception_handler.rb'
 
 class Wagon
-  attr_reader :type, :number, :taken_position, :total_position
+  attr_reader :type, :number, :taken_volume, :total_volume
   attr_accessor :train, :manufacturer
   attr_reader
   include Manufacturer
   include ExceptionHandler
   @@wagons = {}
 
-  def initialize(number, type, amount)
+  def initialize(number, type, volume)
     @number = number
     @type = type
-    @total_position = amount >= 0 ? amount : 0
-    @taken_position = 0
+    @total_volume = volume >= 0 ? volume : 0
+    @taken_volume = 0
     init_validate
     @@wagons[number] = self
   end
@@ -22,18 +22,17 @@ class Wagon
     @train = train
   end
 
-  def take_position(amount)
-    volume = overload(amount)
-    @taken_position += volume
+  def take_volume(volume)
+    @taken_volume += overload(volume)
   end
 
-  def free_position
-    @total_position - @taken_position
+  def free_volume
+    @total_volume - @taken_volume
   end
 
   def overload(amount)
     return 0 if amount < 0
-    @taken_position + amount > @total_position ? free_position : amount
+    amount > free_volume ? free_volume : amount
   end
 
   protected

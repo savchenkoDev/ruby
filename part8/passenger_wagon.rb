@@ -3,8 +3,7 @@ class PassengerWagon < Wagon
     super(number, :pass, amount)
   end
 
-  def take_position(volume)
-    amount = 1
-    super(amount)
+  def take_volume
+    super(1)
   end
 end

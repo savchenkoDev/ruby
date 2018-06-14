@@ -189,7 +189,7 @@ class Railway
     begin
       route = Route.new(station1, station2)
       @routes << route
-    rescue
+    rescue Exception => e
       create_route
     end
     show_message "Создан маршрут: #{route.title}"
@@ -219,12 +219,16 @@ class Railway
   def take_place
     wagon = user_choice(@wagons, :number)
     begin
-      volume = get_volume_from_user if wagon.type == :cargo
-      if wagon.take_position(volume)
-        delimiter
-        show_message "Вы заняли место в вагоне. Ещё #{wagon.free_position} свободно."
-        show_message "Вагон полон." if wagon.free_position.zero?
+      case wagon.type
+      when :cargo
+        volume = get_volume_from_user
+        wagon.take_volume(volume)
+      else
+        wagon.take_volume
       end
+      delimiter
+      show_message "Вы заняли место в вагоне. Ещё #{wagon.free_volume} свободно."
+      show_message "Вагон полон." if wagon.free_volume.zero?
     rescue Exception => e
       show_message "Ошибка: #{e.message}"
       take_place
