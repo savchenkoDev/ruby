@@ -10,7 +10,6 @@ class Railway
   include TrainManager
   include WagonManager
   include RouteManager
-  include Interface
 
   attr_reader :trains, :stations, :wagons, :routes
   def initialize
@@ -18,6 +17,7 @@ class Railway
     @trains = []
     @wagons = []
     @routes = []
+    @interface = Interface.new
   end
 
   def seed
@@ -34,7 +34,7 @@ class Railway
 
   def menu
     loop do
-      item = select_list_item(MAIN_MENU).to_s
+      item = @interface.select_list_item(MAIN_MENU)
       case item
       when 1 then manage_stations
       when 2 then manage_trains
@@ -45,71 +45,5 @@ class Railway
       when RETURN then exit
       end
     end
-  end
-
-  private
-
-  def take_place
-    volume = 1
-    wagon = user_choice(@wagons, :number)
-    volume = volume_from_user if wagon.type == :cargo
-    wagon.take_volume(volume)
-    delimiter
-    show_message "Вы заняли место в вагоне. Ещё #{wagon.free_volume} свободно"
-    show_message 'Вагон полон.' if wagon.free_volume.zero?
-  end
-
-  # Helpers
-
-  def number_from_user
-    delimiter
-    show_line(ASK_NUMBER)
-    gets.chomp
-  end
-
-  def type_from_user
-    delimiter
-    show_message(ASK_TYPE)
-    show_list(TYPE_FOR_SHOW)
-    input = gets.to_i
-    case input
-    when 0 then menu
-    when 1 then return :pass
-    when 2 then return :cargo
-    end
-  end
-
-  def count_from_user
-    delimiter
-    show_line(ASK_COUNT)
-    gets.to_i
-  end
-
-  def volume_from_user
-    delimiter
-    show_line(ASK_VOLUME)
-    gets.to_i
-  end
-
-  def name_from_user
-    delimiter
-    show_line(ASK_NAME)
-    gets.chomp
-  end
-
-  def select_list_item(items)
-    delimiter
-    show_message(ASK_LIST_ITEM)
-    show_list(items)
-    item = gets.to_i
-    return 0 if item == RETURN
-    return item if (1..items.size).cover?(item)
-    select_list_item(items)
-  end
-
-  def user_choice(data_source, attribute)
-    item = select_list_item(data_source.map(&attribute))
-    menu if item == RETURN
-    data_source[item - 1]
   end
 end

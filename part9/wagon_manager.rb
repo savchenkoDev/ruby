@@ -1,7 +1,7 @@
 # module
 module WagonManager
   def manage_wagons
-    item = select_list_item(WAGONS_CRUD)
+    item = @interface.select_list_item(WAGONS_CRUD)
     case item
     when 0 then menu
     when 1 then create_wagon
@@ -17,34 +17,38 @@ module WagonManager
     rescue StandardError
       create_wagon
     end
-    show_new_wagon(wagon)
-    waiting
+    @interface.show_new_wagon(wagon)
+    @interface.waiting
   end
 
   def input_wagon_attr
-    type = type_from_user
-    number = number_from_user
+    number = @interface.number_from_user
+    type = @interface.type_from_user
     class_name = WAGON_TYPES[type]
-    count = count_from_user
+    count = @interface.count_from_user
     class_name.new(number, count)
   end
 
-  def show_new_wagon(wagon)
-    show_message "Создан вагон: № #{wagon.number},
-                  тип: #{wagon.type},
-                  объем: #{wagon.total_volume}"
-  end
-
   def add_wagon_to_train
-    train = user_choice(@trains, :number)
+    train = @interface.user_choice(@trains, :number)
     avail_wagons = @wagons.select { |wagon| wagon.type == train.type }
-    wagon = user_choice(avail_wagons, :number)
+    wagon = @interface.user_choice(avail_wagons, :number)
     train.add_wagon(wagon)
   end
 
   def detach_wagon_from_train
-    train = user_choice(@trains, :number)
-    wagon = user_choice(train.wagons, :number)
+    train = @interface.user_choice(@trains, :number)
+    wagon = @interface.user_choice(train.wagons, :number)
     train.unhook_wagon(wagon)
+  end
+
+  def take_place
+    volume = 1
+    wagon = @interface.user_choice(@wagons, :number)
+    volume = @interface.volume_from_user if wagon.type == :cargo
+    wagon.take_volume(volume)
+    @interface.delimiter
+    @interface.show_message "Вы заняли место в вагоне. Ещё #{wagon.free_volume} свободно."
+    @interface.show_message 'Вагон полон.' if wagon.free_volume.zero?
   end
 end

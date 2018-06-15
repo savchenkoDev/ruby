@@ -1,7 +1,7 @@
 require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
 require_relative 'exception_handler.rb'
-
+# class
 class Train
   include Manufacturer
   include InstanceCounter

@@ -1,6 +1,6 @@
-require_relative "manufacturer.rb"
+require_relative 'manufacturer.rb'
 require_relative 'exception_handler.rb'
-
+# class
 class Wagon
   attr_reader :type, :number, :taken_volume, :total_volume
   attr_accessor :train, :manufacturer
@@ -38,9 +38,9 @@ class Wagon
   protected
 
   def validate!
-    raise "Номер не может быть пустым" if number.nil?
-    raise "Неправильный формат номера" if number !~ NUMBER_FORMAT
-    raise "Неизвестный тип вагона" unless %i[cargo pass].include?(type)
-    raise "Такой вагон уже добавлен" if @@wagons.key?(number)
+    raise 'Номер не может быть пустым' if number.nil?
+    raise 'Неправильный формат номера' if number !~ NUMBER_FORMAT
+    raise 'Неизвестный тип вагона' unless %i[cargo pass].include?(type)
+    raise 'Такой вагон уже добавлен' if @@wagons.key?(number)
   end
 end
