@@ -29,5 +29,3 @@ ASK_LIST_ITEM = 'Выберите пункт из списка:'.freeze
 ASK_COUNT = 'Введите количество мест/объем вагона > '.freeze
 ASK_VOLUME = 'Введите объем который хотите занять > '.freeze
 UNKNOWN_COMAND = 'Неизвестная команда'.freeze
-
-NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/

@@ -1,12 +1,20 @@
 require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
-require_relative 'exception_handler.rb'
+require_relative 'validation.rb'
+
 # class
 class Train
   include Manufacturer
   include InstanceCounter
-  include ExceptionHandler
+  include Validation
+
   attr_reader :current_speed, :number, :route, :type, :wagons
+
+  # NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/
+  #
+  # validate :number, :presence
+  # validate :number, :format, NUMBER_FORMAT
+
   @@trains = {}
   class <<self
     def find(number)
@@ -19,7 +27,7 @@ class Train
     @type = type
     @wagons = []
     @current_speed = 0
-    init_validate
+    validate!
     @@trains[number] = self
     register_instance
   end
@@ -75,12 +83,6 @@ class Train
   end
 
   protected
-
-  def validate!
-    raise 'Номер не может быть пустым' if number.nil?
-    raise 'Неправильный формат номера' if number !~ NUMBER_FORMAT
-    raise 'Неизвестный тип поезда' unless %i[cargo pass].include?(type)
-  end
 
   def speed_ud(speed)
     @current_speed += speed

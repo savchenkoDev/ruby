@@ -1,12 +1,18 @@
 require_relative 'manufacturer.rb'
-require_relative 'exception_handler.rb'
+require_relative 'validation.rb'
 # class
 class Wagon
   attr_reader :type, :number, :taken_volume, :total_volume
   attr_accessor :train, :manufacturer
   attr_reader
   include Manufacturer
-  include ExceptionHandler
+  include Validation
+
+  # NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/
+  #
+  # validate :number, :presence
+  # validate :number, :format, NUMBER_FORMAT
+
   @@wagons = {}
 
   def initialize(number, type, volume)
@@ -14,7 +20,7 @@ class Wagon
     @type = type
     @total_volume = volume >= 0 ? volume : 0
     @taken_volume = 0
-    init_validate
+    validate!
     @@wagons[number] = self
   end
 
@@ -33,14 +39,5 @@ class Wagon
   def overload(amount)
     return 0 if amount < 0
     amount > free_volume ? free_volume : amount
-  end
-
-  protected
-
-  def validate!
-    raise 'Номер не может быть пустым' if number.nil?
-    raise 'Неправильный формат номера' if number !~ NUMBER_FORMAT
-    raise 'Неизвестный тип вагона' unless %i[cargo pass].include?(type)
-    raise 'Такой вагон уже добавлен' if @@wagons.key?(number)
   end
 end

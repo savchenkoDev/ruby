@@ -1,5 +1,10 @@
 # Class
 class CargoTrain < Train
+  include Validation
+  NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/
+
+  validate :number, :presence
+  validate :number, :format, NUMBER_FORMAT
   def initialize(number)
     super(number, :cargo)
   end

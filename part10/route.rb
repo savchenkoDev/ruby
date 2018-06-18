@@ -1,16 +1,16 @@
 require_relative 'instance_counter.rb'
-require_relative 'exception_handler.rb'
+require_relative 'validation.rb'
 # class
 class Route
   include InstanceCounter
-  include ExceptionHandler
+  include Validation
 
   attr_reader :stations, :title
 
   def initialize(start_station, finish_station)
     @stations = [start_station, finish_station]
     @title = "#{start_station.name} - #{finish_station.name}"
-    init_validate
+    validate!
     register_instance
   end
 
@@ -31,12 +31,6 @@ class Route
   end
 
   private
-
-  def validate!
-    raise 'Начало и конец маршрута совпадают' if @stations[0] == @stations[-1]
-    return unless stations[0].class != Station || stations[-1].class != Station
-    raise 'Неизвестный тип аргумента'
-  end
 
   def extreme_position?(position)
     @stations[position] == @stations[0] || @stations[position] == @stations[-1]

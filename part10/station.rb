@@ -1,10 +1,13 @@
 require_relative 'instance_counter.rb'
-require_relative 'exception_handler.rb'
+require_relative 'validation.rb'
 # class
 class Station
   include InstanceCounter
-  include ExceptionHandler
+  include Validation
+
   attr_reader :name, :trains
+
+  validate :name, :presence
 
   @@stations = []
   class << self
@@ -16,7 +19,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
-    init_validate
+    validate!
     @@stations << self
     register_instance
   end
@@ -36,13 +39,5 @@ class Station
 
   def send_train(train)
     @trains.delete(train) if @trains.include?(train)
-  end
-
-  private
-
-  def validate!
-    raise 'Имя не может быть пустым' if name.nil?
-    raise 'Имя не может состоять меньше чем из 3 символов' if name.length < 3
-    raise 'Такая станция уже добавлена' if @@stations.map(&:name).include?(name)
   end
 end

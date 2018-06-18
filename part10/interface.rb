@@ -25,7 +25,7 @@ class Interface
 
   def waiting
     delimiter
-    puts 'Нажмитe любую кнопку чтобы продолжить'
+    puts 'Нажмитe <Enter> чтобы продолжить'
     delimiter
     gets
   end
