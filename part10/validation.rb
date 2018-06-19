@@ -9,7 +9,11 @@ module Validation
     define_method(:validate) do |name, type, *params|
       instance_variable_set('@val'.to_sym, []) if instance_variable_get('@val').nil?
       validators = instance_variable_get('@val')
-      instance_variable_set('@val'.to_sym, validators << [name, type, params])
+      instance_variable_set('@val'.to_sym, validators << {
+        name: name,
+        type: type,
+        params: params
+      })
     end
   end
   # Module
@@ -18,33 +22,30 @@ module Validation
       validations = self.class.instance_variable_get('@val')
       return if validations.nil?
       validations.each do |validator|
-        value = instance_variable_get("@#{validator[0]}".to_sym)
-        case validator[1]
-        when :presence then presence_validator(value)
-        when :type then type_validator(value, validator[2][0])
-        when :format then format_validator(value, validator[2][0])
-        end
+        value = instance_variable_get("@#{validator[:name]}".to_sym)
+        method_name = "#{validation[:type]}_validator"
+        send(method_name, value, validator[:params])
       end
     end
 
-    define_method(:valid?) do
-      begin
-        validate!
-      rescue RuntimeError
-        return false
-      end
-      return true
+    protected
+
+    def valid?
+      validate!
+      true
+    rescue RuntimeError
+      return false
     end
 
-    define_method(:presence_validator) do |value|
+    def presence_validator(value)
       raise 'Empty attribute' if value.to_s.nil? || value.to_s.strip.empty?
     end
 
-    define_method(:type_validator) do |value, param|
+    def type_validator(value, param)
       raise 'Invalid type attribute' if value.class != param
     end
 
-    define_method(:format_validator) do |value, param|
+    def format_validator(value, param)
       raise 'Invalid format attribute' if value !~ param
     end
   end

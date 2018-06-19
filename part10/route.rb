@@ -4,6 +4,7 @@ require_relative 'validation.rb'
 class Route
   include InstanceCounter
   include Validation
+  extend Accessors
 
   attr_reader :stations, :title
 

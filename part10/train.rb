@@ -1,19 +1,17 @@
 require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
 require_relative 'validation.rb'
+require_relative 'accessors.rb'
 
 # class
 class Train
   include Manufacturer
   include InstanceCounter
   include Validation
+  extend Accessors
 
-  attr_reader :current_speed, :number, :route, :type, :wagons
-
-  # NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/
-  #
-  # validate :number, :presence
-  # validate :number, :format, NUMBER_FORMAT
+  attr_reader :current_speed, :number, :route, :type
+  attr_accessor_with_history :wagons, :route
 
   @@trains = {}
   class <<self

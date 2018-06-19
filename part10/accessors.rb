@@ -10,9 +10,10 @@ module Accessors
       define_method(attr) { instance_variable_get(var_name) }
       # Setter for instance variable <attr>
       define_method("#{attr}=".to_sym) do |value|
-        instance_variable_set(history, []) if instance_variable_get(history).nil?
+        history_value = instance_variable_get(history) || []
+        history_value << instance_variable_get(var_name)
+        instance_variable_set(history, history_value)
         instance_variable_set(var_name, value)
-        instance_variable_set(history, instance_variable_get(history) << value)
       end
     end
   end

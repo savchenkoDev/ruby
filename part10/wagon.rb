@@ -1,12 +1,17 @@
 require_relative 'manufacturer.rb'
 require_relative 'validation.rb'
+require_relative 'accessors.rb'
+
 # class
 class Wagon
-  attr_reader :type, :number, :taken_volume, :total_volume
-  attr_accessor :train, :manufacturer
-  attr_reader
   include Manufacturer
   include Validation
+  extend Accessors
+
+  attr_reader :type, :number, :taken_volume, :total_volume
+  attr_accessor_with_history :train, :manufacturer
+  attr_reader
+
 
   # NUMBER_FORMAT = /^([\w]{3}-*[\w]{2})$/
   #

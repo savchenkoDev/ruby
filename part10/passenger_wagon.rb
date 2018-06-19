@@ -1,3 +1,4 @@
+require_relative 'validation.rb'
 # Class
 class PassengerWagon < Wagon
   include Validation
@@ -10,7 +11,7 @@ class PassengerWagon < Wagon
     super(number, :pass, amount)
   end
 
-  def take_volume()
+  def take_volume
     super(1)
   end
 end

@@ -103,7 +103,7 @@ class Interface
     "№ #{wag.number}, #{wag.type} места: #{wag.free_volume}/#{wag.taken_volume}"
   end
 
-  def show_each_train(wagon)
+  def show_each_train(train)
     "№ #{train.number}, тип: #{train.type}, вагонов: #{train.wagons.size}"
   end
 end
