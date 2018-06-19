@@ -7,24 +7,19 @@ module Validation
   # Module
   module ClassMethods
     define_method(:validate) do |name, type, *params|
-      instance_variable_set('@val'.to_sym, []) if instance_variable_get('@val').nil?
-      validators = instance_variable_get('@val')
-      instance_variable_set('@val'.to_sym, validators << {
-        name: name,
-        type: type,
-        params: params
-      })
+      @validators ||= []
+      @validators << { name: name, type: type, params: params}
     end
   end
   # Module
   module InstanceMethods
     define_method(:validate!) do
-      validations = self.class.instance_variable_get('@val')
-      return if validations.nil?
-      validations.each do |validator|
+      validators = self.class.instance_variable_get('@validators')
+      return if validators.nil?
+      validators.each do |validator|
         value = instance_variable_get("@#{validator[:name]}".to_sym)
-        method_name = "#{validation[:type]}_validator"
-        send(method_name, value, validator[:params])
+        method_name = "#{validator[:type]}_validator"
+        send(method_name, value, *validator[:params])
       end
     end
 
@@ -34,7 +29,7 @@ module Validation
       validate!
       true
     rescue RuntimeError
-      return false
+      false
     end
 
     def presence_validator(value)
