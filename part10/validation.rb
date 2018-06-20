@@ -6,14 +6,14 @@ module Validation
   end
   # Module
   module ClassMethods
-    define_method(:validate) do |name, type, *params|
+    def validate(name, type, *params)
       @validators ||= []
-      @validators << { name: name, type: type, params: params}
+      @validators << { name: name, type: type, params: params }
     end
   end
   # Module
   module InstanceMethods
-    define_method(:validate!) do
+    def validate!
       validators = self.class.instance_variable_get('@validators')
       return if validators.nil?
       validators.each do |validator|
