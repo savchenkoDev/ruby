@@ -3,7 +3,6 @@ require_relative 'instance_counter.rb'
 require_relative 'validation.rb'
 require_relative 'accessors.rb'
 
-# class
 class Train
   include Manufacturer
   include InstanceCounter

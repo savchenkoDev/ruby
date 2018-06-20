@@ -1,4 +1,3 @@
-# module
 module TrainManager
   def manage_trains
     item = @interface.select_list_item(TRAIN_CRUD)

@@ -1,4 +1,4 @@
-# module
+
 module RouteManager
   def manage_routes
     item = @interface.select_list_item(ROUTE_CRUD)

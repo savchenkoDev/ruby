@@ -1,17 +1,16 @@
-# Module
 module Validation
   def self.included(base)
     base.extend ClassMethods
     base.send :include, InstanceMethods
   end
-  # Module
+
   module ClassMethods
     def validate(name, type, *params)
       @validators ||= []
       @validators << { name: name, type: type, params: params }
     end
   end
-  # Module
+
   module InstanceMethods
     def validate!
       validators = self.class.instance_variable_get('@validators')

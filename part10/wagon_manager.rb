@@ -1,4 +1,3 @@
-# module
 module WagonManager
   def manage_wagons
     item = @interface.select_list_item(WAGONS_CRUD)

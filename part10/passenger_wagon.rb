@@ -1,5 +1,5 @@
 require_relative 'validation.rb'
-# Class
+
 class PassengerWagon < Wagon
   include Validation
 

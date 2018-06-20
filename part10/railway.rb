@@ -4,7 +4,7 @@ require_relative 'station_manager.rb'
 require_relative 'train_manager.rb'
 require_relative 'wagon_manager.rb'
 require_relative 'route_manager.rb'
-# class
+
 class Railway
   include StationManager
   include TrainManager

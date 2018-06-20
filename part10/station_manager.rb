@@ -1,4 +1,3 @@
-# module
 module StationManager
   def manage_stations
     item = @interface.select_list_item(STATION_CRUD)

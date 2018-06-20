@@ -1,6 +1,6 @@
 require_relative 'instance_counter.rb'
 require_relative 'validation.rb'
-# class
+
 class Route
   include InstanceCounter
   include Validation
